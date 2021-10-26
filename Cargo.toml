@@ -2,6 +2,8 @@
 name = "rusted-parrot"
 version = "0.1.0"
 authors = ["Caleb Smith <email@calebdixonsmith.top>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
 edition = "2021"
 
 [dependencies]
