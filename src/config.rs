@@ -2,13 +2,13 @@ use std::path::Path;
 use std::fs::{File};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     pub consumer_key : String, 
     pub consumer_secret : String,
     pub access_key : String,
     pub access_secret : String,
-    pub interval_sec : u64,
+    pub interval_hours : u64,
 }
 
 impl Config {

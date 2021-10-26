@@ -1,21 +1,23 @@
-use twitter_api::{self, oauth::Token};
+// use twitter_api::{self, oauth::Token};
+use egg_mode::*;
 
-pub struct Twitter<'a> {
-    consumer_token : Token<'a>,
-    access_token : Token<'a>,
+pub struct Twitter {
+    token: Token
 }
 
-impl<'a> Twitter<'a>{
+impl Twitter{
     pub fn new (consumer_key : String, consumer_secret : String,
                 access_key : String, access_secret : String) -> Self {
         Twitter {
-            consumer_token : Token::new(consumer_key, consumer_secret),
-            access_token : Token::new(access_key, access_secret)
+            token: Token::Access {
+                access: KeyPair::new(access_key, access_secret),
+                consumer: KeyPair::new(consumer_key, consumer_secret)
+            }
         }
     }
 
-    pub fn tweet (&self, message : String)  {
-        twitter_api::update_status(&self.consumer_token, &self.access_token, &message).unwrap();
+    pub async fn tweet (&self, message : String)  {
+        tweet::DraftTweet::new(message).send(&self.token).await.unwrap();
     }
 }
 

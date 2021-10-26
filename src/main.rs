@@ -4,20 +4,12 @@ use std::time;
 mod config;
 mod twitter;
 
-const CONF_FILENAME: &str = ".twitter-bot.conf";
-const QUOTE_FILENAME: &str = ".quotes.txt";
+const CONF_FILENAME: &str = "config.json";
+const QUOTE_FILENAME: &str = "quotes.txt";
 
-fn get_home_dir() -> PathBuf {
-    match dirs2::config_dir() {
-        Some(p) => p,
-        None => {
-            panic!("Impossible to get your home dir!");
-        }
-    }
-}
-
-fn main() {
-    let conf_path: PathBuf = get_home_dir();
+#[tokio::main]
+async fn main() {
+    let conf_path: PathBuf = dirs2::config_dir().expect("Failed to get config dir!").join("twitter-bot");
 
     let config =
         config::Config::read(&conf_path.join(CONF_FILENAME)).expect("Cannot find config file");
@@ -35,8 +27,8 @@ fn main() {
     );
 
     for q in quotes {
-        twitter.tweet(q);
+        futures::executor::block_on(twitter.tweet(q));
 
-        std::thread::sleep(time::Duration::from_millis(1000 * config.interval_sec));
+        std::thread::sleep(time::Duration::from_millis(1000 * 60 * 60 * config.interval_hours));
     }
 }
